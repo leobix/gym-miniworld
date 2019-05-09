@@ -20,6 +20,8 @@ from storage import RolloutStorage
 from neural_density import NeuralDensity
 from skimage.transform import resize
 
+#from gym_miniworld.wrappers import GreyscaleWrapper
+
 #from visualize import visdom_plot
 
 import tensorflow as tf
@@ -70,6 +72,8 @@ def main():
 
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                         args.gamma, args.log_dir, args.add_timestep, device, False)
+
+    envs = GreyscaleWrapper(envs)
 
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
         base_kwargs={'recurrent': args.recurrent_policy})
@@ -125,11 +129,13 @@ def main():
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
 
+            print(obs)
+
             if (bool(args.useNeural)):
                 frame = imresize(obs / img_scale, (42, 42), order=1)
                 psc_add = neural_density.neural_psc(frame, step)
             else:
-                psc_add = 3.14159
+                psc_add = 0
 
             step += 1
 

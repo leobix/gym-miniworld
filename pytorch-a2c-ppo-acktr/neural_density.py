@@ -1,5 +1,7 @@
 from GatedPixelCNN.func import process_density_images, process_density_input, get_network
 import tensorflow as tf
+import numpy as np
+from math import exp
 
 
 import pickle
