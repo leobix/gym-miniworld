@@ -129,11 +129,9 @@ def main():
                 frame = imresize(obs / img_scale, (42, 42), order=1)
                 psc_add = neural_density.neural_psc(frame, step)
             else:
-                psc_add = 3.14159
+                psc_add = False
 
             step += 1
-
-            print(psc_add)
 
             """
             for info in infos:
