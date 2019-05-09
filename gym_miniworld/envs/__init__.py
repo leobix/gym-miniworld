@@ -11,6 +11,7 @@ from .fourrooms import *
 from .threerooms import *
 from .wallgap import *
 from .sidewalk import *
+from .sidewalkaddict import *
 from .putnext import *
 from .maze import *
 from .collecthealth import *
