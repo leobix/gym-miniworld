@@ -56,8 +56,7 @@ FLAGS = DotDict({
     'resnet_nonlinearity': 'concat_elu',
     'lr_decay': 0.999995,
     'lr': 0.00005,
-    'num_ds': 1,
-    'nameDemonstrator' : 'None',
+    'num_ds': 1
 })
 
 
@@ -127,17 +126,14 @@ class PixelBonus(object):
         print("Neural model has been successfully saved and named %s" % model_dir)
 
     def load_model(self,model_dir):
-        logger.info("Initializing all variables")
-        tf.initialize_all_variables().run()
+        #tf.initialize_all_variables().run()
 
-        logger.info("Loading checkpoints...")
         ckpt = tf.train.get_checkpoint_state("./model_out/"+model_dir)
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
             fname = os.path.join("./model_out/"+model_dir, ckpt_name)
             self.saver.restore(self.sess, fname)
-            logger.info("Load SUCCESS: %s" % fname)
-        else:
-            logger.info("Load FAILED: %s" % self.model_dir)
+            #info("Load SUCCESS: %s" % fname)
+            #logger.info("Load FAILED: %s" % self.model_dir)
 
         #self.t = self.t_op.eval(session=self.sess)
