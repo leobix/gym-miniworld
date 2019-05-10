@@ -56,8 +56,7 @@ FLAGS = DotDict({
     'resnet_nonlinearity': 'concat_elu',
     'lr_decay': 0.999995,
     'lr': 0.00005,
-    'num_ds': 1,
-    'nameDemonstrator' : 'None',
+    'num_ds': 1
 })
 
 

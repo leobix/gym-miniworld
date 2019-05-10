@@ -146,7 +146,7 @@ def main():
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
-    if useNeural:
+    if args.useNeural:
         #FLAGS = update_tf_wrapper_args(args,)
         tf_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
         tf_config.gpu_options.allow_growth = True
@@ -187,12 +187,15 @@ def main():
 
     episode_rewards = deque(maxlen=100)
 
-    step =0
+    steper =0
     img_scale = 1
     psc_weight = float(args.pscWeight)
+    psc_rollout=list()
 
     start = time.time()
     for j in range(num_updates):
+        step_counter = 0
+        psc_tot=list()
         for step in range(args.num_steps):
             # Sample actions
             with torch.no_grad():
@@ -204,19 +207,19 @@ def main():
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
 
-            #print(obs)
             psc_add = 0
-            if useNeural:
+            if args.useNeural:
                 for i in obs[0]:
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
-                    psc_add += pixel_bonus.bonus(i, step)
+                    psc_add += pixel_bonus.bonus(i, steper)
+                    steper += 1
+
                 psc_add = psc_add / 12
+            else:
+                useNeural = 0
 
+            psc_tot.append(psc_add)
 
-            step += 1
-
-
-            #print(psc_add)
 
             """
             for info in infos:
@@ -230,9 +233,11 @@ def main():
                 if eps_done:
                     episode_rewards.append(reward[idx])
 
+            psc_add=torch.tensor(psc_add,requires_grad=True, dtype = torch.float)
+
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
+            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, psc=psc_add)
 
         with torch.no_grad():
             next_value = actor_critic.get_value(rollouts.obs[-1],
@@ -241,8 +246,7 @@ def main():
 
         rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
-
-        value_loss, action_loss, dist_entropy = agent.update(rollouts, psc_add, psc_weight)
+        value_loss, action_loss, dist_entropy = agent.update(rollouts, psc_tot, psc_weight)
 
         rollouts.after_update()
 

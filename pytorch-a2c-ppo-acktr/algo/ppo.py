@@ -45,11 +45,16 @@ class PPO():
             else:
                 data_generator = rollouts.feed_forward_generator(
                     advantages, self.num_mini_batch)
-
+            steper=0
             for sample in data_generator:
+
                 obs_batch, recurrent_hidden_states_batch, actions_batch, \
                    return_batch, masks_batch, old_action_log_probs_batch, \
-                        adv_targ = sample
+                        adv_targ, psc_batch = sample
+
+                psc_batch=(psc_batch).mean()
+
+                steper += 1
 
                 # Reshape to do in a single forward pass for all steps
                 values, action_log_probs, dist_entropy, states = self.actor_critic.evaluate_actions(
@@ -63,11 +68,13 @@ class PPO():
                 action_loss = -torch.min(surr1, surr2).mean()
 
                 value_loss = F.mse_loss(return_batch, values)
-                psc_add = torch.tensor(psc_add, requires_grad=True, dtype = torch.float)
+
+                #print(value_loss)
+                print(psc_add)
 
                 self.optimizer.zero_grad()
                 (value_loss * self.value_loss_coef + action_loss -
-                 dist_entropy * self.entropy_coef - psc_add * psc_weight).backward()
+                 dist_entropy * self.entropy_coef - psc_batch * psc_weight).backward(retain_graph=True)
                 nn.utils.clip_grad_norm_(self.actor_critic.parameters(),
                                          self.max_grad_norm)
                 self.optimizer.step()
