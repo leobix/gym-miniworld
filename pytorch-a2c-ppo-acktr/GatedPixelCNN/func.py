@@ -113,4 +113,9 @@ def process_density_input(samples):
 def get_network(dens_scope):
     preprocess_conf(conf)
     network = Network(conf, 42, 42, 1, dens_scope)
+
+
+
     return network
+
+

@@ -4,7 +4,6 @@ import os
 import time
 import types
 from collections import deque
-
 import gym
 import numpy as np
 import torch
@@ -12,7 +11,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import tensorflow as tf
-
+import pickle
 import algo
 from arguments import get_args
 from envs import make_vec_envs
@@ -213,7 +212,6 @@ def main():
                 for i in obs[0]:
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc_add += pixel_bonus.bonus(i, step)
-
                 psc_add = psc_add / 12
             else:
                 psc_add = 0
@@ -330,7 +328,7 @@ def main():
                 np.mean(eval_episode_rewards)
             ))
             if (bool(args.useNeural)):
-                neural_density.saveModel(str(args.nameDemonstrator))
+                pixel_bonus.save_model(str(args.nameDemonstrator), step)
 
         """
         if args.vis and j % args.vis_interval == 0:

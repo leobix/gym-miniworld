@@ -5,6 +5,8 @@ from GatedPixelCNN.func import process_density_images, process_density_input, ge
 from GatedPixelCNN.utils import save_images
 import logging
 import torch
+import os
+
 import tensorflow as tf
 from tensorboardX import SummaryWriter
 from skimage.transform import resize
@@ -111,3 +113,29 @@ class PixelBonus(object):
     #     print(data)
     #     #print(rescaling_inv(data).cpu().numpy())
     #     return rescaling_inv(data)
+
+    def save_model(self,model_dir,t):
+        #if not os.path.exists(model_dir):
+        #    os.makedirs(model_dir)
+
+        #with tf.variable_scope('t'):
+        #    t_op = tf.Variable(0, trainable=False, name='t')
+        saver = tf.train.Saver(tf.trainable_variables(), max_to_keep=20)
+
+        saver.save(self.sess, "./model_out/"+model_dir, global_step=t)
+
+    def load_model(self,model_dir):
+        logger.info("Initializing all variables")
+        tf.initialize_all_variables().run()
+
+        logger.info("Loading checkpoints...")
+        ckpt = tf.train.get_checkpoint_state("./model_out/"+model_dir)
+        if ckpt and ckpt.model_checkpoint_path:
+            ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+            fname = os.path.join("./model_out/"+model_dir, ckpt_name)
+            self.saver.restore(self.sess, fname)
+            logger.info("Load SUCCESS: %s" % fname)
+        else:
+            logger.info("Load FAILED: %s" % self.model_dir)
+
+        #self.t = self.t_op.eval(session=self.sess)
