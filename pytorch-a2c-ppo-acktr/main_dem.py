@@ -205,7 +205,7 @@ def main():
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
 
-            print(obs)
+            #print(obs)
 
             if (bool(args.useNeural)):
                 psc_add = 0
@@ -219,7 +219,7 @@ def main():
             step += 1
 
 
-            print(psc_add)
+            #print(psc_add)
 
             """
             for info in infos:

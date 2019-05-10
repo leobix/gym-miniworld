@@ -94,7 +94,7 @@ class PixelBonus(object):
     def sample_images(self, n, t):
         data = np.zeros([n * n, self.flags.img_height, self.flags.img_width, 1])
         sample = self.density_model.generate_samples(self.sess, data)
-        print(sample)
+        #print(sample)
         save_images(sample, self.flags.img_height, self.flags.img_width, n, n, t=t)
 
     # def sample_images(self, n):
