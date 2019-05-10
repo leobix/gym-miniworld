@@ -186,7 +186,7 @@ def main():
 
     episode_rewards = deque(maxlen=100)
 
-    step =0
+    step_count =0
     img_scale = 1
     psc_weight = float(args.pscWeight)
 
@@ -208,12 +208,12 @@ def main():
             if args.useNeural:
                 for i in obs[0]:
                     psc_add += pixel_bonus.bonus(i, step)
+                    step_count += 1
                 psc_add = psc_add / 12
             else:
                 psc_add = 0
 
 
-            step += 1
 
 
             #print(psc_add)
