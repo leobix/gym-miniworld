@@ -28,6 +28,7 @@ except ImportError:
 
 try:
     import gym_miniworld
+    print("successfully imported gym_miniworld")
 except ImportError:
     pass
 
