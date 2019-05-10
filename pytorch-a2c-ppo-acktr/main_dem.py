@@ -92,6 +92,7 @@ FLAGS = DotDict({
     'lr_decay': 0.999995,
     'lr': 0.00005,
     'num_ds': 1,
+    'nameDemonstrator' : 'None',
 })
 
 imresize = resize
@@ -324,7 +325,7 @@ def main():
             ))
     if useNeural:
         pixel_bonus.save_model(str(args.nameDemonstrator), step)
-        print("Neural model has been successfully saved and named %s" % args.nameDemonstrator)
+        print("Neural model has been successfully saved and named %s" % str(args.nameDemonstrator))
 
         """
         if args.vis and j % args.vis_interval == 0:
