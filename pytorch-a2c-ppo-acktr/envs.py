@@ -9,6 +9,8 @@ from vec_env import VecEnvWrapper
 from vec_env.dummy_vec_env import DummyVecEnv
 from vec_env.subproc_vec_env import SubprocVecEnv
 
+#from gym_miniworld.textures.wrappers import GreyscaleWrapper
+
 try:
     import dm_control2gym
 except ImportError:
@@ -33,6 +35,7 @@ except ImportError:
 def make_env(env_id, seed, rank, log_dir, add_timestep, allow_early_resets):
     def _thunk():
         env = gym.make(env_id)
+        #env = GreyscaleWrapper(env)
         env.seed(seed + rank)
 
         obs_shape = env.observation_space.shape

@@ -63,9 +63,7 @@ class PPO():
                 action_loss = -torch.min(surr1, surr2).mean()
 
                 value_loss = F.mse_loss(return_batch, values)
-
-                if psc_add != False:
-                    psc_add = torch.tensor(psc_add, requires_grad=True, dtype=torch.float32)
+                psc_add = torch.tensor(psc_add, requires_grad=True)
 
                 self.optimizer.zero_grad()
                 (value_loss * self.value_loss_coef + action_loss -

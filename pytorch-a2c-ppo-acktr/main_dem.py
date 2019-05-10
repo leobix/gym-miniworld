@@ -4,25 +4,97 @@ import os
 import time
 import types
 from collections import deque
-
 import gym
 import numpy as np
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-
+import tensorflow as tf
+import pickle
 import algo
 from arguments import get_args
 from envs import make_vec_envs
 from model import Policy
 from storage import RolloutStorage
-from neural_density import NeuralDensity
+
+from gatedpixelcnn_bonus import PixelBonus
 from skimage.transform import resize
+
+#from gym_miniworld.wrappers import GreyscaleWrapper
 
 #from visualize import visdom_plot
 
-import tensorflow as tf
+def update_tf_wrapper_args(args, tf_flags):
+    """
+    take input command line args to DQN agent and update tensorflow wrapper default
+    settings
+    :param args:
+    :param FLAGS:
+    :return:
+    """
+    # doesn't support boolean arguments
+    to_parse = args.wrapper_args
+    if to_parse:
+        for kwarg in to_parse:
+            keyname, val = kwarg.split('=')
+            if keyname in ['ckpt_path', 'data_path', 'samples_path', 'summary_path']:
+                # if directories don't exist, make them
+                if not os.path.exists(val):
+                    os.makedirs(val)
+                tf_flags.update(keyname, val)
+            elif keyname in ['data', 'model']:
+                tf_flags.update(keyname, val)
+            elif keyname in ['mmc_beta']:
+                tf_flags.update(keyname, float(val))
+            else:
+                tf_flags.update(keyname, int(val))
+    return tf_flags
+
+class DotDict(object):
+    def __init__(self, dict):
+        self.dict = dict
+
+    def __getattr__(self, name):
+        return self.dict[name]
+
+    def update(self, name, val):
+        self.dict[name] = val
+
+    # can delete this later
+    def get(self, name):
+        return self.dict[name]
+
+FLAGS = DotDict({
+    'img_height': 42,
+    'img_width': 42,
+    'channel': 1,
+    'data': 'mnist',
+    'conditional': False,
+    'num_classes': None,
+    'filter_size': 3,
+    'init_fs': 7,
+    'f_map': 16,
+    'f_map_fc': 16,
+    'colors': 8,
+    'parallel_workers': 1,
+    'layers': 3,
+    'epochs': 25,
+    'batch_size': 16,
+    'model': '',
+    'data_path': 'data',
+    'ckpt_path': 'ckpts',
+    'samples_path': 'samples',
+    'summary_path': 'logs',
+    'restore': True,
+    'nr_resnet': 1,
+    'nr_filters': 32,
+    'nr_logistic_mix': 5,
+    'resnet_nonlinearity': 'concat_elu',
+    'lr_decay': 0.999995,
+    'lr': 0.00005,
+    'num_ds': 1,
+})
 
 imresize = resize
 
@@ -71,16 +143,24 @@ def main():
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                         args.gamma, args.log_dir, args.add_timestep, device, False)
 
+    # envs = GreyscaleWrapper(envs)
+
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
     if (bool(args.useNeural)):
-        nd_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
-        nd_config.gpu_options.allow_growth = True
-        nd_sess = tf.Session(config=nd_config)
+        #FLAGS = update_tf_wrapper_args(args,)
+        tf_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
+        tf_config.gpu_options.allow_growth = True
+        sess = tf.Session(config=tf_config)
+        pixel_bonus = PixelBonus(FLAGS, sess)
+        tf.initialize_all_variables().run(session=sess)
 
-        neural_density = NeuralDensity(nd_sess)
+        #with tf.variable_scope('step'):
+        #    self.step_op = tf.Variable(0, trainable=False, name='step')
+        #    self.step_input = tf.placeholder('int32', None, name='step_input')
+        #    self.step_assign_op = self.step_op.assign(self.step_input)
 
 
     if args.algo == 'a2c':
@@ -125,13 +205,19 @@ def main():
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
 
+            print(obs)
+
             if (bool(args.useNeural)):
-                frame = imresize(obs / img_scale, (42, 42), order=1)
-                psc_add = neural_density.neural_psc(frame, step)
+                psc_add = 0
+                for i in obs[0]:
+                    frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
+                    psc_add += pixel_bonus.bonus(i, step)
+                psc_add = psc_add / 12
             else:
-                psc_add = 3.14159
+                psc_add = 0
 
             step += 1
+
 
             print(psc_add)
 
@@ -242,7 +328,7 @@ def main():
                 np.mean(eval_episode_rewards)
             ))
             if (bool(args.useNeural)):
-                neural_density.saveModel(str(args.nameDemonstrator))
+                pixel_bonus.save_model(str(args.nameDemonstrator), step)
 
         """
         if args.vis and j % args.vis_interval == 0:
