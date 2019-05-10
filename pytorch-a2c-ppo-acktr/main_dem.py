@@ -207,7 +207,7 @@ def main():
             psc_add = 0
             if args.useNeural:
                 for i in obs[0]:
-                    psc_add += pixel_bonus.bonus(i, step)
+                    psc_add += pixel_bonus.bonus(i, step_count)
                     step_count += 1
                 psc_add = psc_add / 12
             else:
