@@ -70,6 +70,8 @@ def get_args():
 
     parser.add_argument('--pscWeight', type=float, default=0.0,
                         help='weight given to the psc term')
+    parser.add_argument('--loadNeural', type=str, default=None,
+                        help='allows to load a trained neural model')
 
     args = parser.parse_args()
 

@@ -203,15 +203,13 @@ def main():
             obs, reward, done, infos = envs.step(action)
 
             #print(obs)
-
+            psc_add = 0
             if useNeural:
-                psc_add = 0
                 for i in obs[0]:
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc_add += pixel_bonus.bonus(i, step)
                 psc_add = psc_add / 12
-            else:
-                psc_add = 0
+
 
             step += 1
 
