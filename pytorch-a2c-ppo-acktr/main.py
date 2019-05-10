@@ -17,15 +17,7 @@ from arguments import get_args
 from envs import make_vec_envs
 from model import Policy
 from storage import RolloutStorage
-from neural_density import NeuralDensity
-from skimage.transform import resize
-
 #from visualize import visdom_plot
-
-import tensorflow as tf
-
-imresize = resize
-
 
 args = get_args()
 
@@ -75,13 +67,6 @@ def main():
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
-    if (bool(args.useNeural)):
-        nd_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
-        nd_config.gpu_options.allow_growth = True
-        nd_sess = tf.Session(config=nd_config)
-
-        neural_density = NeuralDensity(nd_sess)
-
 
     if args.algo == 'a2c':
         agent = algo.A2C_ACKTR(actor_critic, args.value_loss_coef,
@@ -101,16 +86,11 @@ def main():
                         envs.observation_space.shape, envs.action_space,
                         actor_critic.recurrent_hidden_state_size)
 
-
     obs = envs.reset()
     rollouts.obs[0].copy_(obs)
     rollouts.to(device)
 
     episode_rewards = deque(maxlen=100)
-
-    step =0
-    img_scale = 1
-    psc_weight = float(args.pscWeight)
 
     start = time.time()
     for j in range(num_updates):
@@ -124,14 +104,6 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
-
-            if (bool(args.useNeural)):
-                frame = imresize(obs / img_scale, (42, 42), order=1)
-                psc_add = neural_density.neural_psc(frame, step)
-            else:
-                psc_add = False
-
-            step += 1
 
             """
             for info in infos:
@@ -156,8 +128,7 @@ def main():
 
         rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
-
-        value_loss, action_loss, dist_entropy = agent.update(rollouts, 0, 0)
+        value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
 
@@ -239,8 +210,6 @@ def main():
                 len(eval_episode_rewards),
                 np.mean(eval_episode_rewards)
             ))
-            if (bool(args.useNeural)):
-                neural_density.saveModel(str(args.nameDemonstrator))
 
         """
         if args.vis and j % args.vis_interval == 0:

@@ -66,7 +66,7 @@ def get_args():
     parser.add_argument('--useNeural', type=int, default=0,
                         help='do we use the neural density estimation method')
     parser.add_argument('--nameDemonstrator', type=str, default=None,
-                        help="the name of the demonstrator traj path")
+                        help='the name of the demonstrator traj path')
     parser.add_argument('--pscWeight', type=float, default=0.0,
                         help='weight given to the psc term')
     parser.add_argument('--loadNeural', type=str, default=None,
