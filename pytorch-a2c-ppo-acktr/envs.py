@@ -9,7 +9,7 @@ from vec_env import VecEnvWrapper
 from vec_env.dummy_vec_env import DummyVecEnv
 from vec_env.subproc_vec_env import SubprocVecEnv
 
-#from gym_miniworld.textures.wrappers import GreyscaleWrapper
+#from gym_miniworld.wrappers import GreyscaleWrapper
 
 try:
     import dm_control2gym

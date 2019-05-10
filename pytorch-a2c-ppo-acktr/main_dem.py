@@ -21,8 +21,6 @@ from storage import RolloutStorage
 from gatedpixelcnn_bonus import PixelBonus
 from skimage.transform import resize
 
-#from gym_miniworld.wrappers import GreyscaleWrapper
-
 #from visualize import visdom_plot
 
 def update_tf_wrapper_args(args, tf_flags):
@@ -100,6 +98,7 @@ imresize = resize
 
 
 args = get_args()
+useNeural = bool(args.useNeural)
 
 assert args.algo in ['a2c', 'ppo', 'acktr']
 if args.recurrent_policy:
@@ -143,13 +142,11 @@ def main():
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
                         args.gamma, args.log_dir, args.add_timestep, device, False)
 
-    # envs = GreyscaleWrapper(envs)
-
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
         base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
 
-    if (bool(args.useNeural)):
+    if useNeural:
         #FLAGS = update_tf_wrapper_args(args,)
         tf_config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=False)
         tf_config.gpu_options.allow_growth = True
@@ -207,7 +204,7 @@ def main():
 
             #print(obs)
 
-            if (bool(args.useNeural)):
+            if useNeural:
                 psc_add = 0
                 for i in obs[0]:
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
@@ -327,7 +324,7 @@ def main():
                 len(eval_episode_rewards),
                 np.mean(eval_episode_rewards)
             ))
-            if (bool(args.useNeural)):
+            if useNeural:
                 pixel_bonus.save_model(str(args.nameDemonstrator), step)
 
         """
