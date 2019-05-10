@@ -322,8 +322,9 @@ def main():
                 len(eval_episode_rewards),
                 np.mean(eval_episode_rewards)
             ))
-            if useNeural:
-                pixel_bonus.save_model(str(args.nameDemonstrator), step)
+    if useNeural:
+        pixel_bonus.save_model(str(args.nameDemonstrator), step)
+        print("Neural model has been successfully saved and named %s" % args.nameDemonstrator)
 
         """
         if args.vis and j % args.vis_interval == 0:

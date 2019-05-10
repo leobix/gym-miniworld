@@ -65,7 +65,7 @@ def get_args():
                         help='port to run the server on (default: 8097)')
     parser.add_argument('--useNeural', type=int, default=0,
                         help='do we use the neural density estimation method')
-    parser.add_argument("--nameDemonstrator ", required=False,
+    parser.add_argument("--nameDemonstrator", type=str, default=None,
                         help="the name of the demonstrator traj path")
 
     parser.add_argument('--pscWeight', type=float, default=0.0,

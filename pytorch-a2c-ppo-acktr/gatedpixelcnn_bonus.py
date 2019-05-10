@@ -123,6 +123,7 @@ class PixelBonus(object):
         saver = tf.train.Saver(tf.trainable_variables(), max_to_keep=20)
 
         saver.save(self.sess, "./model_out/"+model_dir, global_step=t)
+        print("Neural model has been successfully saved and named %s" % model_dir)
 
     def load_model(self,model_dir):
         logger.info("Initializing all variables")
