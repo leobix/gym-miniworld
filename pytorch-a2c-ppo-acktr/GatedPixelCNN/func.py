@@ -54,6 +54,9 @@ flags.DEFINE_string('gae-lambda', '', 'kernel')
 flags.DEFINE_string('num-env-steps', '', 'kernel')
 flags.DEFINE_string('use-proper-time-limits', '', 'kernel')
 flags.DEFINE_string('use-linear-lr-decay', '', 'kernel')
+flags.DEFINE_string('nameDemonstrator', '', 'kernel')
+flags.DEFINE_string('loadNeural', '', 'kernel')
+flags.DEFINE_string('pscWeight', '', 'kernel')
 
 conf = flags.FLAGS
 
