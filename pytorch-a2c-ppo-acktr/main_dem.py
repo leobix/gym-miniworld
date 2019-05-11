@@ -207,7 +207,6 @@ def main():
             psc_add = 0
             if useNeural:
                 for i in obs[0]:
-                    frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc_add += pixel_bonus.bonus(i, step)
                 psc_add = psc_add / 12
 
