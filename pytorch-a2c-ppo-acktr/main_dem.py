@@ -186,7 +186,7 @@ def main():
 
     episode_rewards = deque(maxlen=100)
 
-    step =0
+    step_count =0
     img_scale = 1
     psc_weight = float(args.pscWeight)
 
@@ -204,14 +204,15 @@ def main():
             obs, reward, done, infos = envs.step(action)
 
             #print(obs)
-            psc_add = 0
             if useNeural:
                 for i in obs[0]:
-                    psc_add += pixel_bonus.bonus(i, step)
+                    psc_add += pixel_bonus.bonus(i, step_count)
+                    step_count += 1
                 psc_add = psc_add / 12
+            else:
+                psc_add = 0
 
 
-            step += 1
 
 
             #print(psc_add)
@@ -323,7 +324,7 @@ def main():
                 len(eval_episode_rewards),
                 np.mean(eval_episode_rewards)
             ))
-    if useNeural:
+    if args.useNeural:
         pixel_bonus.save_model(str(args.nameDemonstrator), step)
         print("Neural model has been successfully saved and named %s" % str(args.nameDemonstrator))
 

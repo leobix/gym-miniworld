@@ -328,8 +328,8 @@ def main():
                 len(eval_episode_rewards),
                 np.mean(eval_episode_rewards)
             ))
-            if useNeural:
-                pixel_bonus.save_model(str(args.nameDemonstrator), step)
+    if useNeural:
+        pixel_bonus.save_model(str(args.nameDemonstrator) + "neural", step)
 
         """
         if args.vis and j % args.vis_interval == 0:
