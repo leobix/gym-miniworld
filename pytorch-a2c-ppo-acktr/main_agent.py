@@ -214,7 +214,6 @@ def main():
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc = pixel_bonus.bonus(i, steper)
                     psc_add += psc
-
                     reward[step_batch] += psc
                     steper += 1
                     step_batch += 1
