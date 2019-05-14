@@ -206,7 +206,6 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs.step(action)
-
             psc_add = 0
             if args.useNeural:
                 step_batch = 0
@@ -214,7 +213,7 @@ def main():
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc = pixel_bonus.bonus(i, steper)
                     psc_add += psc
-                    reward[step_batch] += psc
+                    reward[step_batch] += torch.FloatTensor([psc])
                     steper += 1
                     step_batch += 1
 
