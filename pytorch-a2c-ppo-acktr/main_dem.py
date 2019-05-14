@@ -206,10 +206,12 @@ def main():
             #print(obs)
             psc_add = 0
             if args.useNeural:
+                step_batch = 0
                 for i in obs[0]:
                     psc_add += pixel_bonus.bonus(i, step_count)
                     step_count += 1
-                psc_add = psc_add / 12
+                    step_batch += 1
+                psc_add = psc_add / step_batch
             else:
                 psc_add = 0
 
@@ -233,7 +235,7 @@ def main():
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
             psc_add =torch.FloatTensor([0.0])
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, psc_add)
+            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, 0)
 
         with torch.no_grad():
             next_value = actor_critic.get_value(rollouts.obs[-1],
@@ -243,7 +245,7 @@ def main():
         rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
 
-        value_loss, action_loss, dist_entropy = agent.update(rollouts, 0, 0)
+        value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
 

@@ -209,16 +209,19 @@ def main():
 
             psc_add = 0
             if args.useNeural:
+                step_batch = 0
                 for i in obs[0]:
                     frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
-                    psc_add += pixel_bonus.bonus(i, steper)
-                    steper += 1
+                    psc = pixel_bonus.bonus(i, steper)
+                    psc_add += psc
 
-                psc_add = psc_add / 12
+                    reward[step_batch] += psc
+                    steper += 1
+                    step_batch += 1
+
+                psc_add = psc_add / step_batch
             else:
                 useNeural = 0
-
-            psc_tot.append(psc_add)
 
 
             """
@@ -246,7 +249,7 @@ def main():
 
         rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
-        value_loss, action_loss, dist_entropy = agent.update(rollouts, psc_tot, psc_weight)
+        value_loss, action_loss, dist_entropy = agent.update(rollouts)
 
         rollouts.after_update()
 

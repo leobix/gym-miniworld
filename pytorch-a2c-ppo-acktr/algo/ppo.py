@@ -29,7 +29,7 @@ class PPO():
 
         self.optimizer = optim.Adam(actor_critic.parameters(), lr=lr, eps=eps)
 
-    def update(self, rollouts, psc_add, psc_weight):
+    def update(self, rollouts):
         advantages = rollouts.returns[:-1] - rollouts.value_preds[:-1]
         advantages = (advantages - advantages.mean()) / (
             advantages.std() + 1e-5)
@@ -52,7 +52,7 @@ class PPO():
                    return_batch, masks_batch, old_action_log_probs_batch, \
                         adv_targ, psc_batch = sample
 
-                psc_batch=(psc_batch).mean()
+                #psc_batch=(psc_batch).mean()
 
                 steper += 1
 
@@ -73,7 +73,7 @@ class PPO():
 
                 self.optimizer.zero_grad()
                 (value_loss * self.value_loss_coef + action_loss -
-                 dist_entropy * self.entropy_coef - psc_batch * psc_weight).backward(retain_graph=True)
+                 dist_entropy * self.entropy_coef).backward(retain_graph=True)
                 nn.utils.clip_grad_norm_(self.actor_critic.parameters(),
                                          self.max_grad_norm)
                 self.optimizer.step()
