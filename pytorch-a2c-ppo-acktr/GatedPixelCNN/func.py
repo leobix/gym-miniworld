@@ -57,7 +57,7 @@ flags.DEFINE_string('use-linear-lr-decay', '', 'kernel')
 flags.DEFINE_string('nameDemonstrator', '', 'kernel')
 flags.DEFINE_string('loadNeural', '', 'kernel')
 flags.DEFINE_string('pscWeight', '', 'kernel')
-
+flags.DEFINE_string('ep-max-step', '', 'kernel')
 conf = flags.FLAGS
 
 # logging

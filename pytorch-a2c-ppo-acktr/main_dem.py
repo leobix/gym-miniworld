@@ -93,6 +93,7 @@ FLAGS = DotDict({
     'lr': 0.00005,
     'num_ds': 1,
     'nameDemonstrator' : 'None',
+    'ep-max-step' : 'None',
 })
 
 imresize = resize
