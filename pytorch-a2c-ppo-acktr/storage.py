@@ -11,7 +11,6 @@ class RolloutStorage(object):
         self.obs = torch.zeros(num_steps + 1, num_processes, *obs_shape)
         self.recurrent_hidden_states = torch.zeros(num_steps + 1, num_processes, recurrent_hidden_state_size)
         self.rewards = torch.zeros(num_steps, num_processes, 1)
-        self.psc = torch.zeros(num_steps, num_processes, 1)
         self.value_preds = torch.zeros(num_steps + 1, num_processes, 1)
         self.returns = torch.zeros(num_steps + 1, num_processes, 1)
         self.action_log_probs = torch.zeros(num_steps, num_processes, 1)
@@ -31,22 +30,19 @@ class RolloutStorage(object):
         self.obs = self.obs.to(device)
         self.recurrent_hidden_states = self.recurrent_hidden_states.to(device)
         self.rewards = self.rewards.to(device)
-        self.psc = self.psc.to(device)
-
         self.value_preds = self.value_preds.to(device)
         self.returns = self.returns.to(device)
         self.action_log_probs = self.action_log_probs.to(device)
         self.actions = self.actions.to(device)
         self.masks = self.masks.to(device)
 
-    def insert(self, obs, recurrent_hidden_states, actions, action_log_probs, value_preds, rewards, masks, psc):
+    def insert(self, obs, recurrent_hidden_states, actions, action_log_probs, value_preds, rewards, masks):
         self.obs[self.step + 1].copy_(obs)
         self.recurrent_hidden_states[self.step + 1].copy_(recurrent_hidden_states)
         self.actions[self.step].copy_(actions)
         self.action_log_probs[self.step].copy_(action_log_probs)
         self.value_preds[self.step].copy_(value_preds)
         self.rewards[self.step].copy_(rewards)
-        self.psc[self.step].copy_(psc)
         self.masks[self.step + 1].copy_(masks)
 
         self.step = (self.step + 1) % self.num_steps
@@ -91,11 +87,9 @@ class RolloutStorage(object):
             masks_batch = self.masks[:-1].view(-1, 1)[indices]
             old_action_log_probs_batch = self.action_log_probs.view(-1, 1)[indices]
             adv_targ = advantages.view(-1, 1)[indices]
-            psc_batch = self.psc.view(-1, 1)[indices]
-            #print(psc_batch)
 
             yield obs_batch, recurrent_hidden_states_batch, actions_batch, \
-                return_batch, masks_batch, old_action_log_probs_batch, adv_targ, psc_batch
+                return_batch, masks_batch, old_action_log_probs_batch, adv_targ
 
     def recurrent_generator(self, advantages, num_mini_batch):
         num_processes = self.rewards.size(1)

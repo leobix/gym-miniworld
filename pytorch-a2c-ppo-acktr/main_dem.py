@@ -234,8 +234,7 @@ def main():
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
-            psc_add =torch.FloatTensor([0.0])
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, psc_add)
+            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
 
         with torch.no_grad():
             next_value = actor_critic.get_value(rollouts.obs[-1],

@@ -50,9 +50,7 @@ class PPO():
 
                 obs_batch, recurrent_hidden_states_batch, actions_batch, \
                    return_batch, masks_batch, old_action_log_probs_batch, \
-                        adv_targ, psc_batch = sample
-
-                #psc_batch=(psc_batch).mean()
+                        adv_targ = sample
 
                 steper += 1
 

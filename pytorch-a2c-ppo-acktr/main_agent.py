@@ -219,7 +219,7 @@ def main():
 
                 psc_add = psc_add / step_batch
             else:
-                useNeural = 0
+                psc_add = 0
 
 
             """
@@ -234,13 +234,10 @@ def main():
                 if eps_done:
                     episode_rewards.append(reward[idx])
 
-            psc_add=torch.tensor(psc_add,requires_grad=True, dtype = torch.float)
-
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
-            psc_add =torch.FloatTensor([0.0])
 
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, psc=psc_add)
+            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
 
         with torch.no_grad():
             next_value = actor_critic.get_value(rollouts.obs[-1],
