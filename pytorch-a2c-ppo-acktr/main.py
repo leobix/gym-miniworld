@@ -62,7 +62,7 @@ def main():
     """
 
     envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
-                        args.gamma, args.log_dir, args.add_timestep, device, False)
+                        args.gamma, args.log_dir, args.add_timestep, device, False, args.ep_max_step)
 
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
         base_kwargs={'recurrent': args.recurrent_policy})
@@ -120,7 +120,7 @@ def main():
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
+            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks, torch.tensor(0,requires_grad=True, dtype = torch.float))
 
         with torch.no_grad():
             next_value = actor_critic.get_value(rollouts.obs[-1],
@@ -129,7 +129,7 @@ def main():
 
         rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
-        value_loss, action_loss, dist_entropy = agent.update(rollouts, 0,0)
+        value_loss, action_loss, dist_entropy = agent.update(rollouts,0,0)
 
         rollouts.after_update()
 

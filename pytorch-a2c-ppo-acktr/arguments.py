@@ -71,6 +71,8 @@ def get_args():
                         help='weight given to the psc term')
     parser.add_argument('--loadNeural', type=str, default=None,
                         help='allows to load a trained neural model')
+    parser.add_argument('--ep-max-step', type=int, default=None,
+                        help='maximum number of steps authorized for an episode')
 
     args = parser.parse_args()
 
