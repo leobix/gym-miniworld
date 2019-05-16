@@ -120,9 +120,9 @@ class PixelBonus(object):
 
         #with tf.variable_scope('t'):
         #    t_op = tf.Variable(0, trainable=False, name='t')
-        saver = tf.train.Saver(tf.trainable_variables(), max_to_keep=20)
+        saver = tf.train.Saver(self.sess)
 
-        saver.save(self.sess, "./model_out/"+model_dir, global_step=t)
+        saver.save(self.sess, "./model_out/"+model_dir)
         print("Neural model has been successfully saved and named %s" % model_dir)
 
     def load_model(self,model_dir):
@@ -132,6 +132,7 @@ class PixelBonus(object):
         if ckpt and ckpt.model_checkpoint_path:
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
             fname = os.path.join("./model_out/"+model_dir, ckpt_name)
+            print(fname)
             self.saver.restore(self.sess, fname)
             #info("Load SUCCESS: %s" % fname)
             #logger.info("Load FAILED: %s" % self.model_dir)
