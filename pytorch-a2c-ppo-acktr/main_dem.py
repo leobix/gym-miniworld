@@ -142,7 +142,7 @@ def main():
         win = None
     """
 
-    envs = make_vec_envs(args.env_name, args.seed, args.num_processes,
+    envs = make_vec_envs(args.env_name_dem, args.seed, args.num_processes,
                         args.gamma, args.log_dir, args.add_timestep, device, False)
 
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
@@ -267,7 +267,7 @@ def main():
 
             save_model = [save_model, hasattr(envs.venv, 'ob_rms') and envs.venv.ob_rms or None]
 
-            torch.save(save_model, os.path.join(save_path, args.env_name + ".pt"))
+            torch.save(save_model, os.path.join(save_path, args.env_name_dem + ".pt"))
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 
@@ -287,7 +287,7 @@ def main():
             )
 
         if args.eval_interval is not None and len(episode_rewards) > 1 and j % args.eval_interval == 0:
-            eval_envs = make_vec_envs(args.env_name, args.seed + args.num_processes, args.num_processes,
+            eval_envs = make_vec_envs(args.env_name_dem, args.seed + args.num_processes, args.num_processes,
                                 args.gamma, eval_log_dir, args.add_timestep, device, True)
 
             if eval_envs.venv.__class__.__name__ == "VecNormalize":
