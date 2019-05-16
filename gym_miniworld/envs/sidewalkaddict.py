@@ -80,11 +80,14 @@ class SidewalkAddict(MiniWorldEnv):
 
         # Walking into the street ends the episode
         if self.street.point_inside(self.agent.pos):
-            reward = 1
-            done = False
+            reward = 0
+            done = True
+
+        if self.agent.pos[0] > -0.2:
+            reward += 0.1
 
         if self.near(self.box):
-            reward += 100 #self._reward()
+            reward += 1 #self._reward()
             done = True
 
         return obs, reward, done, info
