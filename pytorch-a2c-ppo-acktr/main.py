@@ -114,8 +114,8 @@ def main():
 
             # FIXME: works only for environments with sparse rewards
             for idx, eps_done in enumerate(done):
-                if eps_done:
-                    episode_rewards.append(reward[idx])
+                #if eps_done:
+                episode_rewards.append(reward[idx])
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
