@@ -188,7 +188,7 @@ def main():
 
     episode_rewards = deque(maxlen=100)
 
-    step_count =0
+    step_count = 0
     img_scale = 1
     psc_weight = float(args.pscWeight)
 
@@ -329,7 +329,7 @@ def main():
                 np.mean(eval_episode_rewards)
             ))
     if args.useNeural:
-        pixel_bonus.save_model(str(args.nameDemonstrator), step)
+        pixel_bonus.save_model(str(args.nameDemonstrator))
         print("Neural model has been successfully saved and named %s" % str(args.nameDemonstrator))
 
         """

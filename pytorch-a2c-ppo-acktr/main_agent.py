@@ -154,8 +154,10 @@ def main():
         sess = tf.Session(config=tf_config)
         pixel_bonus = PixelBonus(FLAGS, sess)
         tf.initialize_all_variables().run(session=sess)
+        print(args.loadNeural is not None)
         if args.loadNeural is not None:
             pixel_bonus.load_model(args.loadNeural)
+            print('YEEEEEEEEEEEEEEEEEEESSSSSSS')
 
         #with tf.variable_scope('step'):
         #    self.step_op = tf.Variable(0, trainable=False, name='step')

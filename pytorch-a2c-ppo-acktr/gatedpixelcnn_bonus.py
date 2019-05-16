@@ -114,7 +114,7 @@ class PixelBonus(object):
     #     #print(rescaling_inv(data).cpu().numpy())
     #     return rescaling_inv(data)
 
-    def save_model(self,model_dir,t):
+    def save_model(self, model_dir):
         #if not os.path.exists(model_dir):
         #    os.makedirs(model_dir)
 
@@ -129,12 +129,14 @@ class PixelBonus(object):
         #tf.initialize_all_variables().run()
 
         ckpt = tf.train.get_checkpoint_state("./model_out/"+model_dir)
+        print(ckpt)
         if ckpt and ckpt.model_checkpoint_path:
-            ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
-            fname = os.path.join("./model_out/"+model_dir, ckpt_name)
-            print(fname)
+            print('test')
+            #ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
+            fname = os.path.join("./model_out/"+model_dir)
+            print('################# fname is %s:' %fname )
             self.saver.restore(self.sess, fname)
-            #info("Load SUCCESS: %s" % fname)
-            #logger.info("Load FAILED: %s" % self.model_dir)
+        #info("Load SUCCESS: %s" % fname)
+        #logger.info("Load FAILED: %s" % self.model_dir)
 
         #self.t = self.t_op.eval(session=self.sess)
