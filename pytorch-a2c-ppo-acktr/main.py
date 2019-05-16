@@ -20,6 +20,7 @@ from storage import RolloutStorage
 #from visualize import visdom_plot
 
 args = get_args()
+print(args)
 
 assert args.algo in ['a2c', 'ppo', 'acktr']
 if args.recurrent_policy:

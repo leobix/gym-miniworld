@@ -99,6 +99,8 @@ imresize = resize
 
 
 args = get_args()
+print(args)
+
 useNeural = bool(args.useNeural)
 
 assert args.algo in ['a2c', 'ppo', 'acktr']
