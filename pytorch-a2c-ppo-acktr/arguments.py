@@ -51,8 +51,10 @@ def get_args():
                         help='environment to train on (default: PongNoFrameskip-v4)')
     parser.add_argument('--env-name_agent', default='PongNoFrameskip-v4',
                         help='environment to train on (default: PongNoFrameskip-v4)')
-    parser.add_argument('--log-dir', default='/tmp/gym/',
-                        help='directory to save agent logs (default: /tmp/gym)')
+    parser.add_argument('--log-dir_agent', default='/tmp/gym/agent/',
+                        help='directory to save agent logs (default: /tmp/gym/agent)')
+    parser.add_argument('--log-dir_dem', default='/tmp/gym/dem/',
+                        help='directory to save agent logs (default: /tmp/gym/dem)')
     parser.add_argument('--save-dir', default='./trained_models/',
                         help='directory to save agent logs (default: ./trained_models/)')
     parser.add_argument('--no-cuda', action='store_true', default=False,

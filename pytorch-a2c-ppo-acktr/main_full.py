@@ -117,13 +117,13 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
 try:
-    os.makedirs(args.log_dir)
+    os.makedirs(args.log_dir_dem)
 except OSError:
-    files = glob.glob(os.path.join(args.log_dir, '*.monitor.csv'))
+    files = glob.glob(os.path.join(args.log_dir_dem, '*.monitor.csv'))
     for f in files:
         os.remove(f)
 
-eval_log_dir = args.log_dir + "_eval"
+eval_log_dir = args.log_dir_dem + "_eval"
 
 try:
     os.makedirs(eval_log_dir)
@@ -143,7 +143,7 @@ except OSError:
     """
 
     envs = make_vec_envs(args.env_name_dem, args.seed, args.num_processes,
-                         args.gamma, args.log_dir, args.add_timestep, device, False)
+                         args.gamma, args.log_dir_dem, args.add_timestep, device, False)
 
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
                           base_kwargs={'recurrent': args.recurrent_policy})
@@ -358,13 +358,13 @@ if args.cuda:
     torch.cuda.manual_seed(args.seed)
 
 try:
-    os.makedirs(args.log_dir)
+    os.makedirs(args.log_dir_agent)
 except OSError:
-    files = glob.glob(os.path.join(args.log_dir, '*.monitor.csv'))
+    files = glob.glob(os.path.join(args.log_dir_agent, '*.monitor.csv'))
     for f in files:
         os.remove(f)
 
-eval_log_dir = args.log_dir + "_eval"
+eval_log_dir = args.log_dir_agent + "_eval"
 
 try:
     os.makedirs(eval_log_dir)
@@ -384,7 +384,7 @@ except OSError:
     """
 
     envs = make_vec_envs(args.env_name_agent, args.seed, args.num_processes,
-                         args.gamma, args.log_dir, args.add_timestep, device, False)
+                         args.gamma, args.log_dir_agent, args.add_timestep, device, False)
 
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
                           base_kwargs={'recurrent': args.recurrent_policy})
