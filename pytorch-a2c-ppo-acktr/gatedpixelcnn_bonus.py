@@ -120,7 +120,7 @@ class PixelBonus(object):
 
         #with tf.variable_scope('t'):
         #    t_op = tf.Variable(0, trainable=False, name='t')
-        saver = tf.train.Saver(self.sess)
+        saver = tf.train.Saver(self.sess,tf.trainable_variables())
 
         saver.save(self.sess, "./model_out/"+model_dir)
         print("Neural model has been successfully saved and named %s" % model_dir)
