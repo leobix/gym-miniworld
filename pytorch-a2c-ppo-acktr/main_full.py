@@ -352,9 +352,9 @@ def main():
     envs2 = make_vec_envs(args.env_name_agent, args.seed, args.num_processes,
                          args.gamma, args.log_dir_agent, args.add_timestep, device, False)
 
-    actor_critic = Policy(envs2.observation_space.shape, envs2.action_space,
+    actor_critic2 = Policy(envs2.observation_space.shape, envs2.action_space,
                           base_kwargs={'recurrent': args.recurrent_policy})
-    actor_critic.to(device)
+    actor_critic2.to(device)
 
     # if args.useNeural:
     #    #FLAGS = update_tf_wrapper_args(args,)
@@ -374,28 +374,28 @@ def main():
     #    self.step_assign_op = self.step_op.assign(self.step_input)
 
     if args.algo == 'a2c':
-        agent = algo.A2C_ACKTR(actor_critic, args.value_loss_coef,
+        agent2 = algo.A2C_ACKTR(actor_critic2, args.value_loss_coef,
                                args.entropy_coef, lr=args.lr,
                                eps=args.eps, alpha=args.alpha,
                                max_grad_norm=args.max_grad_norm)
     elif args.algo == 'ppo':
-        agent = algo.PPO(actor_critic, args.clip_param, args.ppo_epoch, args.num_mini_batch,
+        agent2 = algo.PPO(actor_critic2, args.clip_param, args.ppo_epoch, args.num_mini_batch,
                          args.value_loss_coef, args.entropy_coef, lr=args.lr,
                          eps=args.eps,
                          max_grad_norm=args.max_grad_norm)
     elif args.algo == 'acktr':
-        agent = algo.A2C_ACKTR(actor_critic, args.value_loss_coef,
+        agent2 = algo.A2C_ACKTR(actor_critic2, args.value_loss_coef,
                                args.entropy_coef, acktr=True)
 
-    rollouts = RolloutStorage(args.num_steps, args.num_processes,
+    rollouts2 = RolloutStorage(args.num_steps, args.num_processes,
                               envs2.observation_space.shape, envs2.action_space,
-                              actor_critic.recurrent_hidden_state_size)
+                              actor_critic2.recurrent_hidden_state_size)
 
     obs = envs2.reset()
-    rollouts.obs[0].copy_(obs)
-    rollouts.to(device)
+    rollouts2.obs[0].copy_(obs)
+    rollouts2.to(device)
 
-    episode_rewards = deque(maxlen=100)
+    episode_rewards2 = deque(maxlen=100)
 
     steper = 0
     img_scale = 1
@@ -409,13 +409,14 @@ def main():
         for step in range(args.num_steps):
             # Sample actions
             with torch.no_grad():
-                value, action, action_log_prob, recurrent_hidden_states = actor_critic.act(
-                    rollouts.obs[step],
-                    rollouts.recurrent_hidden_states[step],
-                    rollouts.masks[step])
+                value, action, action_log_prob, recurrent_hidden_states = actor_critic2.act(
+                    rollouts2.obs[step],
+                    rollouts2.recurrent_hidden_states[step],
+                    rollouts2.masks[step])
 
             # Obser reward and next obs
             obs, reward, done, infos = envs2.step(action)
+            done = (done and reward > 0)
             psc_add = 0
             if args.useNeural:
                 step_batch = 0
@@ -441,23 +442,23 @@ def main():
             # FIXME: works only for environments with sparse rewards
             for idx, eps_done in enumerate(done):
                 if eps_done:
-                    episode_rewards.append(reward[idx])
+                    episode_rewards2.append(reward[idx])
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
 
-            rollouts.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
+            rollouts2.insert(obs, recurrent_hidden_states, action, action_log_prob, value, reward, masks)
 
         with torch.no_grad():
-            next_value = actor_critic.get_value(rollouts.obs[-1],
-                                                rollouts.recurrent_hidden_states[-1],
-                                                rollouts.masks[-1]).detach()
+            next_value = actor_critic2.get_value(rollouts2.obs[-1],
+                                                rollouts2.recurrent_hidden_states[-1],
+                                                rollouts2.masks[-1]).detach()
 
-        rollouts.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
+        rollouts2.compute_returns(next_value, args.use_gae, args.gamma, args.tau)
 
-        value_loss, action_loss, dist_entropy = agent.update(rollouts)
+        value_loss, action_loss, dist_entropy = agent2.update(rollouts2)
 
-        rollouts.after_update()
+        rollouts2.after_update()
 
         if j % args.save_interval == 0 and args.save_dir != "":
             print('Saving model')
@@ -470,9 +471,9 @@ def main():
                 pass
 
             # A really ugly way to save a model to CPU
-            save_model = actor_critic
+            save_model = actor_critic2
             if args.cuda:
-                save_model = copy.deepcopy(actor_critic).cpu()
+                save_model = copy.deepcopy(actor_critic2).cpu()
 
             save_model = [save_model, hasattr(envs2.venv, 'ob_rms') and envs2.venv.ob_rms or None]
 
@@ -480,23 +481,23 @@ def main():
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 
-        if j % args.log_interval == 0 and len(episode_rewards) > 1:
+        if j % args.log_interval == 0 and len(episode_rewards2) > 1:
             end = time.time()
             print(
                 "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
                     format(
                     j, total_num_steps,
                     int(total_num_steps / (end - start)),
-                    len(episode_rewards),
-                    np.mean(episode_rewards),
-                    np.median(episode_rewards),
-                    np.min(episode_rewards),
-                    np.max(episode_rewards),
-                    np.count_nonzero(np.greater(episode_rewards, 0)) / len(episode_rewards)
+                    len(episode_rewards2),
+                    np.mean(episode_rewards2),
+                    np.median(episode_rewards2),
+                    np.min(episode_rewards2),
+                    np.max(episode_rewards2),
+                    np.count_nonzero(np.greater(episode_rewards2, 0.9)) / len(episode_rewards2)
                 )
             )
 
-        if args.eval_interval is not None and len(episode_rewards) > 1 and j % args.eval_interval == 0:
+        if args.eval_interval is not None and len(episode_rewards2) > 1 and j % args.eval_interval == 0:
             eval_envs2 = make_vec_envs2(args.env_name_agent, args.seed + args.num_processes, args.num_processes,
                                       args.gamma, eval_log_dir, args.add_timestep, device, True)
 
@@ -516,16 +517,16 @@ def main():
 
                 eval_envs2.venv._obfilt = types.MethodType(_obfilt, envs2.venv)
 
-            eval_episode_rewards = []
+            eval_episode_rewards2 = []
 
             obs = eval_envs2.reset()
             eval_recurrent_hidden_states = torch.zeros(args.num_processes,
-                                                       actor_critic.recurrent_hidden_state_size, device=device)
+                                                       actor_critic2.recurrent_hidden_state_size, device=device)
             eval_masks = torch.zeros(args.num_processes, 1, device=device)
 
-            while len(eval_episode_rewards) < 10:
+            while len(eval_episode_rewards2) < 10:
                 with torch.no_grad():
-                    _, action, _, eval_recurrent_hidden_states = actor_critic.act(
+                    _, action, _, eval_recurrent_hidden_states = actor_critic2.act(
                         obs, eval_recurrent_hidden_states, eval_masks, deterministic=True)
 
                 # Obser reward and next obs
@@ -533,13 +534,13 @@ def main():
                 eval_masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
                 for info in infos:
                     if 'episode' in info.keys():
-                        eval_episode_rewards.append(info['episode']['r'])
+                        eval_episode_rewards2.append(info['episode']['r'])
 
             eval_envs2.close()
 
             print(" Evaluation using {} episodes: mean reward {:.5f}\n".format(
-                len(eval_episode_rewards),
-                np.mean(eval_episode_rewards)
+                len(eval_episode_rewards2),
+                np.mean(eval_episode_rewards2)
             ))
         # if useNeural:
         #    pixel_bonus.save_model(str(args.nameDemonstrator) + "neural", step)
