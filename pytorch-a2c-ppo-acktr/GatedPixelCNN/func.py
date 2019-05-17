@@ -49,6 +49,7 @@ flags.DEFINE_string('log-interval', '', 'kernel')
 flags.DEFINE_string('entropy-coef', '', 'kernel')
 flags.DEFINE_string('value-loss-coef', '', 'kernel')
 flags.DEFINE_string('ppo-epoch', '', 'kernel')
+flags.DEFINE_string('seed', '', 'kernel')
 flags.DEFINE_string('num-mini-batch', '', 'kernel')
 
 flags.DEFINE_string('gamma', '', 'kernel')
