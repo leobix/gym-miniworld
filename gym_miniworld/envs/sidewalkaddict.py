@@ -83,7 +83,7 @@ class SidewalkAddict(MiniWorldEnv):
             reward = 0
             done = True
 
-        if self.agent.pos[0] > -0.2:
+        if self.agent.pos[0] > -0.2 and self.agent.pos[2]>4:
             reward += 0.1
 
         if self.near(self.box):
