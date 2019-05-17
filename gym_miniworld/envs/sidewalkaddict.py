@@ -85,11 +85,14 @@ class SidewalkAddict(MiniWorldEnv):
             self.count_danger = 0
             done = True
 
-        if self.agent.pos[0] > -0.2 :
+        if self.agent.pos[0] > -0.5 :
             self.count_danger += 1
+            print(self.count_danger)
 
         if self.near(self.box):
-            reward += self._reward() + self.count_danger * 0.1
+            reward += self._reward()
+            print(self.count_danger)
+            # + self.count_danger * 0.1
             self.count_danger = 0
             done = True
 
