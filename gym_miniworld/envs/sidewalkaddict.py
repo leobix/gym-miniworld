@@ -18,6 +18,7 @@ class SidewalkAddict(MiniWorldEnv):
 
         # Allow only the movement actions
         self.action_space = spaces.Discrete(self.actions.move_forward+1)
+        self.count_danger = 0
 
     def _gen_world(self):
         sidewalk = self.add_rect_room(
@@ -81,13 +82,15 @@ class SidewalkAddict(MiniWorldEnv):
         # Walking into the street ends the episode
         if self.street.point_inside(self.agent.pos):
             reward = 0
+            self.count_danger = 0
             done = True
 
-        if self.agent.pos[0] > -0.2 and self.agent.pos[2]>4:
-            reward += 0.1
+        if self.agent.pos[0] > -0.2 :
+            self.count_danger += 1
 
         if self.near(self.box):
-            reward += 1 #self._reward()
+            reward += self._reward() + self.count_danger * 0.1
+            self.count_danger = 0
             done = True
 
         return obs, reward, done, info
