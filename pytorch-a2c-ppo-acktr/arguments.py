@@ -55,6 +55,8 @@ def get_args():
                         help='environment to train on (default: MiniWorld-Sidewalk-v0)')
     parser.add_argument('--log-dir_agent', default='/tmp/gym/agent/',
                         help='directory to save agent logs (default: /tmp/gym/agent)')
+    parser.add_argument('--log-dir', default='/tmp/gym/agent/',
+                        help='directory to save agent logs (default: /tmp/gym/agent)')
     parser.add_argument('--log-dir_dem', default='/tmp/gym/dem/',
                         help='directory to save agent logs (default: /tmp/gym/dem)')
     parser.add_argument('--save-dir', default='./trained_models/',
