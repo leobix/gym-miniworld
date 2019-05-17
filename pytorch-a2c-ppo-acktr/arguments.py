@@ -47,10 +47,12 @@ def get_args():
                         help='vis interval, one log per n updates (default: 100)')
     parser.add_argument('--num-frames', type=int, default=10e6,
                         help='number of frames to train (default: 10e6)')
-    parser.add_argument('--env-name_dem', default='PongNoFrameskip-v4',
-                        help='environment to train on (default: PongNoFrameskip-v4)')
-    parser.add_argument('--env-name_agent', default='PongNoFrameskip-v4',
-                        help='environment to train on (default: PongNoFrameskip-v4)')
+    parser.add_argument('--env-name_dem', default='MiniWorld-SidewalkAddict-v0',
+                        help='environment to train on (default: MiniWorld-SidewalkAddict-v0)')
+    parser.add_argument('--env-name', default='MiniWorld-Sidewalk-v0',
+                        help='environment to train on for main_dem (default: MiniWorld-Sidewalk-v0)')
+    parser.add_argument('--env-name_agent', default='MiniWorld-Sidewalk-v0',
+                        help='environment to train on (default: MiniWorld-Sidewalk-v0)')
     parser.add_argument('--log-dir_agent', default='/tmp/gym/agent/',
                         help='directory to save agent logs (default: /tmp/gym/agent)')
     parser.add_argument('--log-dir_dem', default='/tmp/gym/dem/',

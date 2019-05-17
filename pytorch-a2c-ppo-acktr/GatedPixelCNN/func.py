@@ -42,6 +42,7 @@ flags.DEFINE_string('num-steps', '', 'kernel')
 flags.DEFINE_string('lr', '', 'kernel')
 flags.DEFINE_string('env-name_agent', '', 'kernel')
 flags.DEFINE_string('env-name_dem', '', 'kernel')
+flags.DEFINE_string('env-name', '', 'kernel')
 
 flags.DEFINE_string('useNeural', '', 'kernel')
 flags.DEFINE_string('use-gae', '', 'kernel')
