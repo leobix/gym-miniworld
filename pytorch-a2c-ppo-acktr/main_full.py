@@ -416,7 +416,6 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs2.step(action)
-            done = (done and reward > 0)
             psc_add = 0
             if args.useNeural:
                 step_batch = 0
