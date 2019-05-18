@@ -81,7 +81,6 @@ class SidewalkAddict(MiniWorldEnv):
 
         if self.agent.pos[0] > -0.4 :
             self.count_danger += 1
-            print(self.count_danger)
 
         # Walking into the street ends the episode
         if self.street.point_inside(self.agent.pos):
@@ -91,8 +90,6 @@ class SidewalkAddict(MiniWorldEnv):
 
         if self.near(self.box):
             reward += self._reward() + self.count_danger * 0.5
-            print(reward)
-            print(self.count_danger)
             self.count_danger = 0
             done = True
 
