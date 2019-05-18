@@ -79,19 +79,17 @@ class SidewalkAddict(MiniWorldEnv):
     def step(self, action):
         obs, reward, done, info = super().step(action)
 
-        if self.agent.pos[0] > -0.5 :
+        if self.agent.pos[0] > -0.4 :
             self.count_danger += 1
-            print(self.count_danger)
 
         # Walking into the street ends the episode
         if self.street.point_inside(self.agent.pos):
-            reward = 0
+            reward = self.count_danger * 0.1
             self.count_danger = 0
             done = True
 
         if self.near(self.box):
-            reward += self._reward() # + self.count_danger * 0.1
-            print(self.count_danger)
+            reward += self._reward() + self.count_danger * 0.5
             self.count_danger = 0
             done = True
 
