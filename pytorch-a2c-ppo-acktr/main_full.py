@@ -111,7 +111,7 @@ def main():
         assert args.algo in ['a2c', 'ppo'], \
             'Recurrent policy is not implemented for ACKTR'
 
-    num_updates = int(args.num_frames) // args.num_steps // args.num_processes
+    num_updates = int(args.num_frames) // args.num_steps // args.num_processes // 2
 
     torch.manual_seed(args.seed)
     if args.cuda:
@@ -344,7 +344,7 @@ def main():
     print("FINISHED DEM")
 
     ################## NEW SCRIPT ################
-
+    num_updates = int(args.num_frames) // args.num_steps // args.num_processes
     torch.manual_seed(args.seed)
     if args.cuda:
         torch.cuda.manual_seed(args.seed)
