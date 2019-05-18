@@ -400,7 +400,7 @@ def main():
     steper = 0
     img_scale = 1
     psc_weight = float(args.pscWeight)
-    psc_rollout = list()
+    #psc_rollout = list()
 
     start = time.time()
     for j in range(num_updates):
@@ -421,7 +421,7 @@ def main():
                 for i in obs[0]:
                     #frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc = pixel_bonus.bonus(i, steper)
-                    reward[step_batch] += torch.FloatTensor([psc])
+                    reward[step_batch] += torch.FloatTensor([psc]) * psc_weight
                     steper += 1
                     step_batch += 1
 
@@ -434,8 +434,8 @@ def main():
 
             # FIXME: works only for environments with sparse rewards
             for idx, eps_done in enumerate(done):
-                if eps_done:
-                    episode_rewards2.append(reward[idx])
+                #if eps_done:
+                episode_rewards2.append(reward[idx])
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
@@ -486,7 +486,7 @@ def main():
                     np.median(episode_rewards2),
                     np.min(episode_rewards2),
                     np.max(episode_rewards2),
-                    np.count_nonzero(np.greater(episode_rewards2, 0.9)) / len(episode_rewards2)
+                    np.count_nonzero(np.greater(episode_rewards2, 0.8)) / len(episode_rewards2)
                 )
             )
 
