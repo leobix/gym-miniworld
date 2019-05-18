@@ -404,8 +404,8 @@ def main():
 
     start = time.time()
     for j in range(num_updates):
-        step_counter = 0
-        psc_tot = list()
+        #step_counter = 0
+        #psc_tot = list()
         for step in range(args.num_steps):
             # Sample actions
             with torch.no_grad():
@@ -416,20 +416,14 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs2.step(action)
-            psc_add = 0
             if args.useNeural:
                 step_batch = 0
                 for i in obs[0]:
-                    frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
+                    #frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
                     psc = pixel_bonus.bonus(i, steper)
-                    psc_add += psc
                     reward[step_batch] += torch.FloatTensor([psc])
                     steper += 1
                     step_batch += 1
-
-                psc_add = psc_add / step_batch
-            else:
-                psc_add = 0
 
             """
             for info in infos:
