@@ -396,9 +396,11 @@ def main():
     rollouts2.to(device)
 
     episode_rewards2 = deque(maxlen=100)
+    episode_rewards_for_success = deque(maxlen=100)
+
 
     steper = 0
-    img_scale = 1
+    #img_scale = 1
     psc_weight = float(args.pscWeight)
     #psc_rollout = list()
 
@@ -416,6 +418,7 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs2.step(action)
+            reward_success = reward
             if args.useNeural:
                 step_batch = 0
                 for i in obs[0]:
@@ -436,6 +439,8 @@ def main():
             for idx, eps_done in enumerate(done):
                 #if eps_done:
                 episode_rewards2.append(reward[idx])
+                if eps_done:
+                    episode_rewards_for_success.append(reward_success[idx])
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
@@ -481,12 +486,25 @@ def main():
                     format(
                     j, total_num_steps,
                     int(total_num_steps / (end - start)),
+                    len(episode_rewards_for_success),
+                    np.mean(episode_rewards_for_success),
+                    np.median(episode_rewards_for_success),
+                    np.min(episode_rewards_for_success),
+                    np.max(episode_rewards_for_success),
+                    np.count_nonzero(np.greater(episode_rewards_for_success, 0)) / len(episode_rewards_for_success)
+                )
+            )
+            print(
+                "Same stats but with psc : Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
+                    format(
+                    j, total_num_steps,
+                    int(total_num_steps / (end - start)),
                     len(episode_rewards2),
                     np.mean(episode_rewards2),
                     np.median(episode_rewards2),
                     np.min(episode_rewards2),
                     np.max(episode_rewards2),
-                    np.count_nonzero(np.greater(episode_rewards2, 0.8)) / len(episode_rewards2)
+                    np.count_nonzero(np.greater(episode_rewards2, 0)) / len(episode_rewards2)
                 )
             )
 
