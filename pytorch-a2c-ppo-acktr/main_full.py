@@ -421,12 +421,17 @@ def main():
             reward_success = reward
             if args.useNeural:
                 step_batch = 0
-                for i in obs[0]:
+                for image_batch in obs:
+                    psc = 0
+                    for image in image_batch:
                     #frame = imresize((i / img_scale).cpu().numpy(), (42, 42), order=1)
-                    psc = pixel_bonus.bonus(i, steper)
-                    reward[step_batch] += torch.FloatTensor([psc]) * psc_weight
-                    steper += 1
+                        psc += pixel_bonus.bonus(image, steper)
+                        steper += 1
+                    if psc > 1:
+                        psc = 1
+                    reward[step_batch] += torch.FloatTensor([psc], device = device) * psc_weight
                     step_batch += 1
+                    print(psc)
 
             """
             for info in infos:
