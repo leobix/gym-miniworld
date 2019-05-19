@@ -444,8 +444,8 @@ def main():
                 #if eps_done:
                 episode_rewards2.append(reward[idx])
 
-                #if eps_done:
-                episode_rewards_for_success.append(reward_success[idx])
+                if eps_done:
+                    episode_rewards_for_success.append(reward_success[idx])
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
