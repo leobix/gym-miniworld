@@ -5,6 +5,7 @@ import time
 import types
 from collections import deque
 import gym
+import copy
 import numpy as np
 import torch
 import torch.nn as nn
@@ -418,7 +419,7 @@ def main():
 
             # Obser reward and next obs
             obs, reward, done, infos = envs2.step(action)
-            reward_success = reward
+            reward_success = copy.deepcopy(reward)
             if args.useNeural:
                 step_batch = 0
                 for image_batch in obs:
@@ -429,9 +430,8 @@ def main():
                         steper += 1
                     if psc > 1:
                         psc = 1
-                    reward[step_batch] += torch.FloatTensor([psc], device = device) * psc_weight
+                    reward[step_batch] += torch.FloatTensor([psc]) * psc_weight
                     step_batch += 1
-                    print(psc)
 
             """
             for info in infos:
@@ -444,6 +444,7 @@ def main():
             for idx, eps_done in enumerate(done):
                 #if eps_done:
                 episode_rewards2.append(reward[idx])
+
                 if eps_done:
                     episode_rewards_for_success.append(reward_success[idx])
 
