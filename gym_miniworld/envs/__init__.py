@@ -7,7 +7,9 @@ from .oneroom import *
 from .roomobjs import *
 from .pickupobjs import *
 from .tmaze import *
+from .tmazeaddict import *
 from .fourrooms import *
+from .fourroomsaddict import *
 from .threerooms import *
 from .wallgap import *
 from .sidewalk import *
