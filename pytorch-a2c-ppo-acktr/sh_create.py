@@ -39,7 +39,7 @@ def create_sh_Maze(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
 #SBATCH --gres=gpu:1
 #SBATCH --time 12:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="sidewalk_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="Maze_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
 #chmod +x main_recurrent.py
 
 module load python
@@ -70,7 +70,7 @@ def create_sh_FourRoom(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
 #SBATCH --gres=gpu:1
 #SBATCH --time 12:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="sidewalk_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="fourRoom_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
 #chmod +x main_recurrent.py
 
 module load python
