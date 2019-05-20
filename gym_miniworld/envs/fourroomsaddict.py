@@ -9,14 +9,18 @@ class FourRoomsAddict(MiniWorldEnv):
     Classic four rooms environment
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, forward_step=0.7, turn_step=45, **kwargs):
+
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+        # Allow only the movement actions
+        self.action_space = spaces.Discrete(self.actions.move_forward + 1)
         super().__init__(
-            max_episode_steps=250,
+            max_episode_steps=500,
+            params=params,
             **kwargs
         )
-
-        # Allow only the movement actions
-        self.action_space = spaces.Discrete(self.actions.move_forward+1)
 
     def _gen_world(self):
         # Top-left room

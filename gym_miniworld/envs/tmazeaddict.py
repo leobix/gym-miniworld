@@ -11,7 +11,7 @@ class TMazeAddict(MiniWorldEnv):
 
     def __init__(self, **kwargs):
         super().__init__(
-            max_episode_steps=140,
+            max_episode_steps=280,
             **kwargs
         )
 
@@ -68,7 +68,7 @@ class TMazeAddict2(MiniWorldEnv):
 
     def __init__(self, **kwargs):
         super().__init__(
-            max_episode_steps=140,
+            max_episode_steps=280,
             **kwargs
         )
 
