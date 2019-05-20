@@ -96,7 +96,7 @@ echo 'DONE'"""
 def create_sh_batch(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh(
+        info_dict['sh_dir/ex_Sidewalkseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
 
     for filename in info_dict:
@@ -106,13 +106,13 @@ def create_sh_batch(params):
 def create_sh_batch_Four(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_FourRoom(
+        info_dict['sh_dir/ex_FourRoomseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_FourRoom(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
  
 def create_sh_batch_Maze(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_Maze(
+        info_dict['sh_dir/ex_Mazeseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_Maze(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
 
     for filename in info_dict:
