@@ -106,12 +106,49 @@ def main():
 
     useNeural = bool(args.useNeural)
 
-    assert args.algo in ['a2c', 'ppo', 'acktr']
-    if args.recurrent_policy:
-        assert args.algo in ['a2c', 'ppo'], \
-            'Recurrent policy is not implemented for ACKTR'
+    num_updates = int(args.num_frames) // args.num_steps // args.num_processes // 2
+
+    torch.manual_seed(args.seed)
+    if args.cuda:
+        torch.cuda.manual_seed(args.seed)
+
+    try:
+        os.makedirs(args.log_dir_dem)
+    except OSError:
+        files = glob.glob(os.path.join(args.log_dir_dem, '*.monitor.csv'))
+        for f in files:
+            os.remove(f)
+
+    eval_log_dir = args.log_dir_dem + "_eval"
+
+    try:
+        os.makedirs(eval_log_dir)
+    except OSError:
+        files = glob.glob(os.path.join(eval_log_dir, '*.monitor.csv'))
+        for f in files:
+            os.remove(f)
+
+    torch.set_num_threads(1)
+    device = torch.device("cuda:0" if args.cuda else "cpu")
+
+    """
+    if args.vis:
+        from visdom import Visdom
+        viz = Visdom(port=args.port)
+        win = None
+    """
 
 
+
+    ################## NEW SCRIPT ################
+
+
+    envs2 = make_vec_envs(args.env_name_agent, args.seed, args.num_processes,
+                         args.gamma, args.log_dir_agent, args.add_timestep, device, False)
+
+    actor_critic2 = Policy(envs2.observation_space.shape, envs2.action_space,
+                          base_kwargs={'recurrent': args.recurrent_policy})
+    actor_critic2.to(device)
 
     if useNeural:
         # FLAGS = update_tf_wrapper_args(args,)
@@ -120,26 +157,6 @@ def main():
         sess = tf.Session(config=tf_config)
         pixel_bonus = PixelBonus(FLAGS, sess)
         tf.initialize_all_variables().run(session=sess)
-
-        # with tf.variable_scope('step'):
-        #    self.step_op = tf.Variable(0, trainable=False, name='step')
-        #    self.step_input = tf.placeholder('int32', None, name='step_input')
-        #    self.step_assign_op = self.step_op.assign(self.step_input)
-
-   
-
-    ################## NEW SCRIPT ################
-    num_updates = int(args.num_frames) // args.num_steps // args.num_processes
-    torch.manual_seed(args.seed)
-    if args.cuda:
-        torch.cuda.manual_seed(args.seed)
-
-    envs2 = make_vec_envs(args.env_name_agent, args.seed, args.num_processes,
-                         args.gamma, args.log_dir_agent, args.add_timestep, device, False)
-
-    actor_critic2 = Policy(envs2.observation_space.shape, envs2.action_space,
-                          base_kwargs={'recurrent': args.recurrent_policy})
-    actor_critic2.to(device)
 
     # if args.useNeural:
     #    #FLAGS = update_tf_wrapper_args(args,)
