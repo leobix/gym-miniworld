@@ -3,6 +3,7 @@ import math
 from gym import spaces
 from ..miniworld import MiniWorldEnv, Room
 from ..entity import Box
+from ..params import DEFAULT_PARAMS
 
 class FourRoomsAddict(MiniWorldEnv):
     """
