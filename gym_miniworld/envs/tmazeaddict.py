@@ -3,6 +3,8 @@ import math
 from ..miniworld import MiniWorldEnv, Room
 from ..entity import Box
 from gym import spaces
+from ..params import DEFAULT_PARAMS
+
 
 class TMazeAddict(MiniWorldEnv):
     """
@@ -66,14 +68,20 @@ class TMazeAddict2(MiniWorldEnv):
     Two hallways connected in a T-junction
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, forward_step=0.7, turn_step=45, **kwargs):
+
+        params = DEFAULT_PARAMS.no_random()
+        params.set('forward_step', forward_step)
+        params.set('turn_step', turn_step)
+        # Allow only the movement actions
+
         super().__init__(
             max_episode_steps=280,
+            params=params,
             **kwargs
         )
 
-        # Allow only the movement actions
-        self.action_space = spaces.Discrete(self.actions.move_forward+1)
+        self.action_space = spaces.Discrete(self.actions.move_forward + 1)
 
     def _gen_world(self):
         room1 = self.add_rect_room(
