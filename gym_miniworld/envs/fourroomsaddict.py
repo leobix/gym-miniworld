@@ -15,12 +15,14 @@ class FourRoomsAddict(MiniWorldEnv):
         params.set('forward_step', forward_step)
         params.set('turn_step', turn_step)
         # Allow only the movement actions
-        self.action_space = spaces.Discrete(self.actions.move_forward + 1)
+
         super().__init__(
             max_episode_steps=500,
             params=params,
             **kwargs
         )
+
+        self.action_space = spaces.Discrete(self.actions.move_forward + 1)
 
     def _gen_world(self):
         # Top-left room
