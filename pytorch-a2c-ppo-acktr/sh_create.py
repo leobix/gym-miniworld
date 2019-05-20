@@ -123,7 +123,6 @@ echo 'DONE'"""
 
     return sh_text_updated
 
-
 def create_sh_batch(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
@@ -150,7 +149,7 @@ def create_sh_batch_Maze(params):
         with open(filename, 'w') as f:
             f.write(info_dict[filename])
             
- def create_sh_batch_Maze2(params):
+def create_sh_batch_Maze2(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
         info_dict['sh_dir/ex_Maze2seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_Maze(
