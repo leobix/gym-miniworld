@@ -17,6 +17,7 @@ class FourRooms(MiniWorldEnv):
 
         # Allow only the movement actions
         self.action_space = spaces.Discrete(self.actions.move_forward+1)
+        self.max_episode_steps *= 2
 
     def _gen_world(self):
         # Top-left room
