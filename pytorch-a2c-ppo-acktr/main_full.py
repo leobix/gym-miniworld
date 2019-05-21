@@ -113,7 +113,7 @@ def main():
 
     num_updates = int(args.num_frames) // args.num_steps // args.num_processes // 2
     if args.env_name_dem == 'MiniWorld-TMazeAddict2-v0':
-        num_updates /= 2
+        num_updates = num_updates // 2
 
     torch.manual_seed(args.seed)
     if args.cuda:
