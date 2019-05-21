@@ -103,6 +103,7 @@ imresize = resize
 def main():
     args = get_args()
     print(args)
+    number_of_episodes = 0
 
     useNeural = bool(args.useNeural)
 
@@ -247,6 +248,7 @@ def main():
                 episode_rewards2.append(reward[idx])
 
                 if eps_done:
+                    number_of_episodes += 1
                     episode_rewards_for_success.append(reward_success[idx])
 
             # If done then clean the history of observations.
@@ -286,12 +288,12 @@ def main():
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 
-        if j % args.log_interval == 0 and len(episode_rewards2) > 1:
+        if j % args.log_interval == 0 and len(episode_rewards_for_success) > 1:
             end = time.time()
             print(
-                "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
+                "Updates {}, Number of episodes {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
                     format(
-                    j, total_num_steps,
+                    j, number_of_episodes, total_num_steps,
                     int(total_num_steps / (end - start)),
                     len(episode_rewards_for_success),
                     np.mean(episode_rewards_for_success),
