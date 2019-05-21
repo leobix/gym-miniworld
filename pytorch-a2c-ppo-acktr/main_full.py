@@ -491,7 +491,7 @@ def main():
 
         total_num_steps = (j + 1) * args.num_processes * args.num_steps
 
-        if j % args.log_interval == 0 and len(episode_rewards2) > 1:
+        if j % args.log_interval == 0 and len(episode_rewards_for_success) > 1:
             end = time.time()
             print(
                 "Updates {}, Number of episodes {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
