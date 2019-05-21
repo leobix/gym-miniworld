@@ -112,6 +112,8 @@ def main():
             'Recurrent policy is not implemented for ACKTR'
 
     num_updates = int(args.num_frames) // args.num_steps // args.num_processes // 2
+    if args.env_name_dem == 'MiniWorld-TMazeAddict2-v0':
+        num_updates /= 2
 
     torch.manual_seed(args.seed)
     if args.cuda:
@@ -149,6 +151,8 @@ def main():
     actor_critic = Policy(envs.observation_space.shape, envs.action_space,
                           base_kwargs={'recurrent': args.recurrent_policy})
     actor_critic.to(device)
+
+    number_of_episodes = 0
 
     if useNeural:
         # FLAGS = update_tf_wrapper_args(args,)
@@ -229,6 +233,7 @@ def main():
             for idx, eps_done in enumerate(done):
                 if eps_done:
                     episode_rewards.append(reward[idx])
+                    number_of_episodes +=1
 
             # If done then clean the history of observations.
             masks = torch.FloatTensor([[0.0] if done_ else [1.0] for done_ in done])
@@ -269,9 +274,9 @@ def main():
         if j % args.log_interval == 0 and len(episode_rewards) > 1:
             end = time.time()
             print(
-                "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
+                "Updates {}, Number of episodes {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
                     format(
-                    j, total_num_steps,
+                    j, number_of_episodes, total_num_steps,
                     int(total_num_steps / (end - start)),
                     len(episode_rewards),
                     np.mean(episode_rewards),
@@ -345,6 +350,7 @@ def main():
 
     ################## NEW SCRIPT ################
     num_updates = int(args.num_frames) // args.num_steps // args.num_processes
+    number_of_episodes = 0
     torch.manual_seed(args.seed)
     if args.cuda:
         torch.cuda.manual_seed(args.seed)
@@ -445,6 +451,7 @@ def main():
                 episode_rewards2.append(reward[idx])
 
                 if eps_done:
+                    number_of_episodes+=1
                     episode_rewards_for_success.append(reward_success[idx])
 
             # If done then clean the history of observations.
@@ -487,9 +494,9 @@ def main():
         if j % args.log_interval == 0 and len(episode_rewards2) > 1:
             end = time.time()
             print(
-                "Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
+                "Updates {}, Number of episodes {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
                     format(
-                    j, total_num_steps,
+                    j, number_of_episodes, total_num_steps,
                     int(total_num_steps / (end - start)),
                     len(episode_rewards_for_success),
                     np.mean(episode_rewards_for_success),
