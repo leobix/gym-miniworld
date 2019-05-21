@@ -52,7 +52,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict-v0 --env-name_agent MiniWorld-TMaze-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 1500000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict-v0 --env-name_agent MiniWorld-TMazeAddict2-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 3000000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
@@ -83,7 +83,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict2-v0 --env-name_agent MiniWorld-TMaze-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 1500000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict2-v0 --env-name_agent MiniWorld-TMazeAddict2-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 3000000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
@@ -99,9 +99,9 @@ def create_sh_FourRoom(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
 #SBATCH --mem=120G
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:1
-#SBATCH --time 12:00:00
+#SBATCH --time 22:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="fourRoom_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="fourRoomfast_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
 #chmod +x main_recurrent.py
 
 module load python
@@ -114,7 +114,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-FourRoomsAddict-v0 --env-name_agent MiniWorld-FourRooms-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testFour --num-frames 1500000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-FourRoomsAddict-v0 --env-name_agent MiniWorld-FourRoomsFast-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testFour --num-frames 3500000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
