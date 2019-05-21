@@ -2,12 +2,12 @@ def create_sh(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
     sh_text = """#!/bin/bash
 
 #SBATCH -c 16
-#SBATCH --mem=120G
+#SBATCH --mem=12G
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:1
-#SBATCH --time 12:00:00
+#SBATCH --time 20:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="sidewalk_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="sidewalk_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER_NEURALBASE"
 #chmod +x main_recurrent.py
 
 module load python
@@ -20,7 +20,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_dem MiniWorld-SidewalkAddict-v0 --env-name_agent MiniWorld-Sidewalk-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator test2 --num-frames 1500000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_neural_baseline.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 150 --lr 0.00005 --env-name_agent MiniWorld-Sidewalk-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator test2 --num-frames 5000000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
@@ -38,9 +38,9 @@ def create_sh_Maze2(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
 #SBATCH --mem=120G
 #SBATCH --cpus-per-task=16
 #SBATCH --gres=gpu:1
-#SBATCH --time 12:00:00
+#SBATCH --time 22:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="Maze2_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="Maze2_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER_NEURALBASE"
 #chmod +x main_recurrent.py
 
 module load python
@@ -53,7 +53,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict2-v0 --env-name_agent MiniWorld-TMaze-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 3000000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_neural_baseline.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_agent MiniWorld-TMaze-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 5000000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
@@ -71,7 +71,7 @@ def create_sh_FourRoom(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER):
 #SBATCH --gres=gpu:1
 #SBATCH --time 22:00:00
 #SBATCH --account def-bengioy
-#SBATCH --output="fourRoomfast_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER"
+#SBATCH --output="fourRoomfast_seedRANDOM_SEED_NUMBER_PSC_WEIGHT_NUMBER_NEURALBASE"
 #chmod +x main_recurrent.py
 
 module load python
@@ -84,7 +84,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_dem MiniWorld-FourRoomsAddict-v0 --env-name_agent MiniWorld-FourRoomsFast-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testFour --num-frames 3500000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_neural_baseline.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_agent MiniWorld-FourRoomsFast-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testFour --num-frames 3500000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
@@ -96,7 +96,7 @@ echo 'DONE'"""
 def create_sh_batch(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_Sidewalkseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh(
+        info_dict['sh_dir_neural_base/ex_Sidewalkseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
 
     for filename in info_dict:
@@ -106,17 +106,18 @@ def create_sh_batch(params):
 def create_sh_batch_Four(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_FourRoomseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_FourRoom(
+        info_dict['sh_dir_neural_base/ex_FourRoomseed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_FourRoom(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
+            RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
+
     for filename in info_dict:
         with open(filename, 'w') as f:
             f.write(info_dict[filename])
- 
-            
+
 def create_sh_batch_Maze2(params):
     info_dict = {}
     for RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER in params:
-        info_dict['sh_dir/ex_Maze2seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_Maze(
+        info_dict['sh_dir_neural_base/ex_Maze2seed{}_Psc{}.sh'.format(RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)] = create_sh_Maze(
             RANDOM_SEED_NUMBER, PSC_WEIGHT_NUMBER)
 
     for filename in info_dict:
