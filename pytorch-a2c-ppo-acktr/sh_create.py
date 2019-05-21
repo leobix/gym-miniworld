@@ -53,7 +53,7 @@ module load cuda/10.0.130
 #export BABYAI_DONE_ACTIONS=1
 source $HOME/ENV_observe/bin/activate
 cd ..
-/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict2-v0 --env-name_agent MiniWorld-TMazeAddict2-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 3000000 --useNeural 1 --loadNeural test
+/project/def-bengioy/ai/bin/xvfb-run -d -n 4000 -s "-screen 0 1024x768x24 -ac -noreset" python -u  main_full.py --algo ppo --seed RANDOM_SEED_NUMBER --num-processes 16 --num-steps 80 --lr 0.00005 --env-name_dem MiniWorld-TMazeAddict2-v0 --env-name_agent MiniWorld-TMaze-v0 --pscWeight PSC_WEIGHT_NUMBER --nameDemonstrator testMaze --num-frames 3000000 --useNeural 1 --loadNeural test
 
 echo 'DONE'"""
 
