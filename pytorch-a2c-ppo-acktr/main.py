@@ -92,6 +92,8 @@ def main():
     rollouts.to(device)
 
     episode_rewards = deque(maxlen=100)
+    print(agent.parameters)
+    num_episodes = 0
 
     start = time.time()
     for j in range(num_updates):
@@ -116,6 +118,7 @@ def main():
             # FIXME: works only for environments with sparse rewards
             for idx, eps_done in enumerate(done):
                 if eps_done:
+                    num_episodes +=1
                     episode_rewards.append(reward[idx])
 
             # If done then clean the history of observations.
@@ -156,9 +159,9 @@ def main():
 
         if j % args.log_interval == 0 and len(episode_rewards) > 1:
             end = time.time()
-            print("Updates {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
+            print("Updates {}, Number of episodes {}, num timesteps {}, FPS {} \n Last {} training episodes: mean/median reward {:.2f}/{:.2f}, min/max reward {:.2f}/{:.2f}, success rate {:.2f}\n".
                 format(
-                    j, total_num_steps,
+                    j, num_episodes, total_num_steps,
                     int(total_num_steps / (end - start)),
                     len(episode_rewards),
                     np.mean(episode_rewards),
